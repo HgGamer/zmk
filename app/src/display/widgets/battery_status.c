@@ -108,7 +108,20 @@ int zmk_widget_battery_status_init(struct zmk_widget_battery_status *widget, lv_
 
     return 0;
 }
+int zmk_widget_peripheral_battery_status_init(struct zmk_widget_battery_status *widget,
+                                              lv_obj_t *parent) {
+    peripheral_widget->obj = lv_label_create(parent);
+
+    sys_slist_append(&widgets, &peripheral_widget->node);
+
+    widget_peripheral_battery_status_init();
+
+    return 0;
+}
 
 lv_obj_t *zmk_widget_battery_status_obj(struct zmk_widget_battery_status *widget) {
     return widget->obj;
+}
+lv_obj_t *zmk_widget_peripheral_battery_status_obj(struct zmk_widget_battery_status *widget) {
+    return peripheral_widget->obj;
 }
