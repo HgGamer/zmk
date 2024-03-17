@@ -18,6 +18,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/battery_state_changed.h>
 
 static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
+static sys_slist_t peripheral_widgets = SYS_SLIST_STATIC_INIT(&peripheral_widgets);
 
 struct battery_status_state {
     uint8_t level;
@@ -63,7 +64,9 @@ void battery_status_update_cb(struct battery_status_state state) {
 }
 void peripheral_battery_status_update_cb(struct battery_status_state state) {
     struct zmk_widget_peripheral_battery_status *peripheral_widget;
-    set_battery_symbol(peripheral_widget->obj, state);
+    SYS_SLIST_FOR_EACH_CONTAINER(&peripheral_widgets, peripheral_widget, node) {
+        set_battery_symbol(peripheral_widget->obj, state);
+    }
 }
 static struct battery_status_state battery_status_get_state(const zmk_event_t *eh) {
     const struct zmk_battery_state_changed *ev = as_zmk_battery_state_changed(eh);
@@ -111,7 +114,7 @@ int zmk_widget_peripheral_battery_status_init(
     struct zmk_widget_peripheral_battery_status *peripheral_widget, lv_obj_t *parent) {
     peripheral_widget->obj = lv_label_create(parent);
 
-    sys_slist_append(&widgets, &peripheral_widget->node);
+    sys_slist_append(&peripheral_widgets, &peripheral_widget->node);
 
     widget_peripheral_battery_status_init();
 
