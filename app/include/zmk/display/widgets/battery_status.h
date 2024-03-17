@@ -16,3 +16,6 @@ struct zmk_widget_battery_status {
 
 int zmk_widget_battery_status_init(struct zmk_widget_battery_status *widget, lv_obj_t *parent);
 lv_obj_t *zmk_widget_battery_status_obj(struct zmk_widget_battery_status *widget);
+
+int zmk_widget_peripheral_battery_status_init(struct zmk_widget_battery_status *peripheral_widget, lv_obj_t *parent);
+lv_obj_t *zmk_widget_peripheral_battery_status_obj(struct zmk_widget_battery_status *peripheral_widget);
