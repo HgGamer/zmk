@@ -80,7 +80,7 @@ static struct battery_status_state peripheral_battery_status_get_state(const zmk
         as_zmk_peripheral_battery_state_changed(eh);
 
     return (struct battery_status_state){
-        .level = (ev != NULL) ? ev->state_of_charge : zmk_peripheral_battery_state_of_charge(),
+        .level = 55,
     };
 }
 
