@@ -62,10 +62,8 @@ void battery_status_update_cb(struct battery_status_state state) {
     SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) { set_battery_symbol(widget->obj, state); }
 }
 void peripheral_battery_status_update_cb(struct battery_status_state state) {
-    struct zmk_widget_battery_status *peripheral_widget;
-    SYS_SLIST_FOR_EACH_CONTAINER(&widgets, peripheral_widget, node) {
-        set_battery_symbol(peripheral_widget->obj, state);
-    }
+    struct zmk_widget_peripheral_battery_status *peripheral_widget;
+    set_battery_symbol(peripheral_widget->obj, state);
 }
 static struct battery_status_state battery_status_get_state(const zmk_event_t *eh) {
     const struct zmk_battery_state_changed *ev = as_zmk_battery_state_changed(eh);
@@ -109,8 +107,8 @@ int zmk_widget_battery_status_init(struct zmk_widget_battery_status *widget, lv_
 
     return 0;
 }
-int zmk_widget_peripheral_battery_status_init(struct zmk_widget_battery_status *peripheral_widget,
-                                              lv_obj_t *parent) {
+int zmk_widget_peripheral_battery_status_init(
+    struct zmk_widget_peripheral_battery_status *peripheral_widget, lv_obj_t *parent) {
     peripheral_widget->obj = lv_label_create(parent);
 
     sys_slist_append(&widgets, &peripheral_widget->node);
@@ -123,7 +121,7 @@ int zmk_widget_peripheral_battery_status_init(struct zmk_widget_battery_status *
 lv_obj_t *zmk_widget_battery_status_obj(struct zmk_widget_battery_status *widget) {
     return widget->obj;
 }
-lv_obj_t *
-zmk_widget_peripheral_battery_status_obj(struct zmk_widget_battery_status *peripheral_widget) {
+lv_obj_t *zmk_widget_peripheral_battery_status_obj(
+    struct zmk_widget_peripheral_battery_status *peripheral_widget) {
     return peripheral_widget->obj;
 }
