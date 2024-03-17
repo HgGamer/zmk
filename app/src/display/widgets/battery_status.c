@@ -82,6 +82,7 @@ static struct battery_status_state peripheral_battery_status_get_state(const zmk
 
     return (struct battery_status_state){
         .level = 55,
+        .usb_present = zmk_usb_is_powered(),
     };
 }
 
@@ -105,7 +106,6 @@ int zmk_widget_battery_status_init(struct zmk_widget_battery_status *widget, lv_
     sys_slist_append(&widgets, &widget->node);
 
     widget_battery_status_init();
-    widget_peripheral_battery_status_init();
 
     return 0;
 }
