@@ -62,7 +62,10 @@ void battery_status_update_cb(struct battery_status_state state) {
     SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) { set_battery_symbol(widget->obj, state); }
 }
 void peripheral_battery_status_update_cb(struct battery_status_state state) {
-    LOG_DBG("peripheral_battery_status_update_cb %u", state.level);
+    struct zmk_widget_battery_status *peripheral_widget;
+    SYS_SLIST_FOR_EACH_CONTAINER(&widgets, peripheral_widget, node) {
+        set_battery_symbol(peripheral_widget->obj, state);
+    }
 }
 static struct battery_status_state battery_status_get_state(const zmk_event_t *eh) {
     const struct zmk_battery_state_changed *ev = as_zmk_battery_state_changed(eh);
