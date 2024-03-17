@@ -79,8 +79,6 @@ static struct battery_status_state battery_status_get_state(const zmk_event_t *e
 }
 
 static struct battery_status_state peripheral_battery_status_get_state(const zmk_event_t *eh) {
-    const struct zmk_peripheral_battery_state_changed *ev =
-        as_zmk_peripheral_battery_state_changed(eh);
 
     return (struct battery_status_state){
         .level = 55,
