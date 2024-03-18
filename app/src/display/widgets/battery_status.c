@@ -80,9 +80,9 @@ static struct battery_status_state battery_status_get_state(const zmk_event_t *e
 }
 
 static struct battery_status_state peripheral_battery_status_get_state(const zmk_event_t *eh) {
-
+    const struct zmk_battery_state_changed *ev = as_zmk_battery_state_changed(eh);
     return (struct battery_status_state){
-        .level = 55,
+         .level = (ev != NULL) ? ev->state_of_charge : zmk_battery_state_of_charge()
         .usb_present = zmk_usb_is_powered(),
     };
 }
