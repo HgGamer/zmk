@@ -74,7 +74,7 @@ static struct battery_status_state battery_status_get_state(const zmk_event_t *e
     return (struct battery_status_state) {
         .level = (ev != NULL) ? ev->state_of_charge : zmk_battery_state_of_charge(),
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
-        .usb_present = = false,// zmk_usb_is_powered(),
+        .usb_present = false,// zmk_usb_is_powered(),
 #endif /* IS_ENABLED(CONFIG_USB_DEVICE_STACK) */
     };
 }
