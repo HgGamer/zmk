@@ -11,7 +11,7 @@
 #include <zephyr/sys/sys_io.h>
 #include <zephyr/devicetree.h>
 
-static int pinmux_puchi_ble_init(void) {
+static int pinmux_puchi_ble_init() {
 #if CONFIG_BOARD_PUCHI_BLE_v1
     const struct device *p0 = DEVICE_DT_GET(DT_NODELABEL(gpio0));
 #if CONFIG_BOARD_PUCHI_BLE_CHARGER

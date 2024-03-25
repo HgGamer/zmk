@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #
 # Copyright (c) 2023 The ZMK Contributors
 # SPDX-License-Identifier: MIT
@@ -10,3 +11,18 @@ config BOARD_ADV360PRO_LEFT
 config BOARD_ADV360PRO_RIGHT
     bool "adv360pro_right"
     depends on SOC_NRF52840_QIAA
+||||||| parent of a82932f0 (Adv360: official PR)
+=======
+#
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+#
+
+config BOARD_ADV360PRO_LEFT
+    bool "adv360pro_left"
+    depends on SOC_NRF52840_QIAA
+
+config BOARD_ADV360PRO_RIGHT
+    bool "adv360pro_right"
+    depends on SOC_NRF52840_QIAA
+>>>>>>> a82932f0 (Adv360: official PR)

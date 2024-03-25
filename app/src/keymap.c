@@ -27,15 +27,10 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/sensor_event.h>
 
 static zmk_keymap_layers_state_t _zmk_keymap_layer_state = 0;
+static zmk_keymap_layers_state_t _zmk_keymap_layer_momentary = 0;
 static uint8_t _zmk_keymap_layer_default = 0;
 
 #define DT_DRV_COMPAT zmk_keymap
-
-#if !DT_NODE_EXISTS(DT_DRV_INST(0))
-
-#error "Keymap node not found, check a keymap is available and is has compatible = "zmk,keymap" set"
-
-#endif
 
 #define TRANSFORMED_LAYER(node)                                                                    \
     { LISTIFY(DT_PROP_LEN(node, bindings), ZMK_KEYMAP_EXTRACT_BINDING, (, ), node) }
@@ -81,8 +76,7 @@ static struct zmk_behavior_binding
 
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
 
-static inline int set_layer_state(uint8_t layer, bool state) {
-    int ret = 0;
+static inline int set_layer_state(uint8_t layer, bool state, bool momentary) {
     if (layer >= ZMK_KEYMAP_LAYERS_LEN) {
         return -EINVAL;
     }
@@ -97,13 +91,11 @@ static inline int set_layer_state(uint8_t layer, bool state) {
     // Don't send state changes unless there was an actual change
     if (old_state != _zmk_keymap_layer_state) {
         LOG_DBG("layer_changed: layer %d state %d", layer, state);
-        ret = raise_layer_state_changed(layer, state);
-        if (ret < 0) {
-            LOG_WRN("Failed to raise layer state changed (%d)", ret);
-        }
+        WRITE_BIT(_zmk_keymap_layer_momentary, layer, momentary);
+        ZMK_EVENT_RAISE(create_layer_state_changed(layer, state));
     }
 
-    return ret;
+    return 0;
 }
 
 uint8_t zmk_keymap_layer_default(void) { return _zmk_keymap_layer_default; }
@@ -120,6 +112,15 @@ bool zmk_keymap_layer_active(uint8_t layer) {
     return zmk_keymap_layer_active_with_state(layer, _zmk_keymap_layer_state);
 };
 
+bool zmk_keymap_layer_momentary(uint8_t layer) {
+    return layer != _zmk_keymap_layer_default &&
+           (_zmk_keymap_layer_momentary & (BIT(layer))) == (BIT(layer));
+};
+
+bool zmk_keymap_layers_any_momentary(zmk_keymap_layers_state_t layers_mask) {
+    return (_zmk_keymap_layer_momentary & layers_mask) > 0;
+};
+
 uint8_t zmk_keymap_highest_layer_active(void) {
     for (uint8_t layer = ZMK_KEYMAP_LAYERS_LEN - 1; layer > 0; layer--) {
         if (zmk_keymap_layer_active(layer)) {
@@ -129,16 +130,18 @@ uint8_t zmk_keymap_highest_layer_active(void) {
     return zmk_keymap_layer_default();
 }
 
-int zmk_keymap_layer_activate(uint8_t layer) { return set_layer_state(layer, true); };
+int zmk_keymap_layer_activate(uint8_t layer, bool momentary) {
+    return set_layer_state(layer, true, momentary);
+};
 
-int zmk_keymap_layer_deactivate(uint8_t layer) { return set_layer_state(layer, false); };
+int zmk_keymap_layer_deactivate(uint8_t layer) { return set_layer_state(layer, false, false); };
 
 int zmk_keymap_layer_toggle(uint8_t layer) {
     if (zmk_keymap_layer_active(layer)) {
         return zmk_keymap_layer_deactivate(layer);
     }
 
-    return zmk_keymap_layer_activate(layer);
+    return zmk_keymap_layer_activate(layer, false);
 };
 
 int zmk_keymap_layer_to(uint8_t layer) {
@@ -146,7 +149,7 @@ int zmk_keymap_layer_to(uint8_t layer) {
         zmk_keymap_layer_deactivate(i);
     }
 
-    zmk_keymap_layer_activate(layer);
+    zmk_keymap_layer_activate(layer, false);
 
     return 0;
 }
