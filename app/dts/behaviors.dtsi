@@ -19,4 +19,5 @@
 #include <behaviors/key_repeat.dtsi>
 #include <behaviors/backlight.dtsi>
 #include <behaviors/macros.dtsi>
+#include <behaviors/mouse_setting.dtsi>
 #include <behaviors/mouse_key_press.dtsi>
