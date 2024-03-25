@@ -30,7 +30,7 @@ Thanks to caksoylar for figuring out the changes needed for the swapper PR. As w
 
 And of course to urob for his amazing fork.
 
-## How to use it
+## How to use it  
 
 ### Adjust your mouse key config
 
